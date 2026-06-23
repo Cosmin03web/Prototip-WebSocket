@@ -1,20 +1,18 @@
 require('dotenv').config();
 const express = require('express');
-const http = require('http')
+const http = require('http');
 const WebSocket = require('ws');
 const axios = require('axios');
 const client = require('prom-client');
 
 const FINNHUB_KEY = process.env.FINNHUB_KEY;
 
-// 1. CONFIGURARE PROMETHEUS (Pentru testele Grafana) pe portul 8081
-
 const app = express();
-const server = http.createServer(app);
+const server = http.createServer(app); // Serverul comun (Inima aplicației)
+
+// 1. CONFIGURARE PROMETHEUS
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics({ register: client.register });
-
-const wss = new WebSocket.Server({ server });
 
 const activeConnections = new client.Gauge({
     name: 'websocket_conexiuni_active',
@@ -26,26 +24,19 @@ app.get('/metrics', async (req, res) => {
     res.end(await client.register.metrics());
 });
 
+// 2. SERVIREA INTERFEȚEI REACT
 const path = require('path');
 app.use(express.static(path.join(__dirname, '../frontend-dashboard/build')));
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, '../frontend-dashboard/build', 'index.html'));
 });
 
-const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => {
-    console.log(`Server hibrid (HTTP + WebSocket) pornit pe portul ${PORT}`);
-});
-
-// 2. SERVERUL WEBSOCKET (Push Gateway) pe portul 8080
-
-const wss = new WebSocket.Server({ port: 8080 }, () => {
-    console.log(`[WebSocket Gateway] Serverul ascultă pe ws://localhost:8080`);
-});
+// 3. INIȚIALIZARE WEBSOCKET (Atașat pe serverul comun)
+const wss = new WebSocket.Server({ server });
 
 async function fetchAllData() {
     try {
-        const binanceSymbols = encodeURI('["BTCUSDT","ETHUSDT","SOLUSDT"]');
+        const binanceSymbols = encodeURIComponent('["BTCUSDT","ETHUSDT","SOLUSDT"]');
 
         const [binanceRes, frankfurterRes, coinGeckoRes, aaplRes, msftRes, nvdaRes] = await Promise.all([
             axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbols=${binanceSymbols}`).catch(() => ({ data: [] })),
@@ -81,9 +72,7 @@ async function fetchAllData() {
     }
 }
 
-
-// 3. LOGICA DE BROADCAST (Inima sistemului WebSocket)
-
+// 4. LOGICA DE BROADCAST WEBSOCKET
 setInterval(async () => {
     if (wss.clients.size > 0) {
         const latestData = await fetchAllData();
@@ -108,4 +97,10 @@ wss.on('connection', async (ws) => {
         activeConnections.dec(); 
         console.log(`[Client deconectat] Total activi: ${wss.clients.size}`);
     });
+});
+
+// 5. PORNIREA SERVERULUI COMUN
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+    console.log(`Server hibrid (HTTP + WebSocket) pornit pe portul ${PORT}`);
 });
