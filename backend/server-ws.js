@@ -22,6 +22,12 @@ app.get('/metrics', async (req, res) => {
     res.end(await client.register.metrics());
 });
 
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'frontend-dashboard/build')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend-dashboard/build', 'index.html'));
+});
+
 app.listen(8081, () => {
     console.log(`[Metrici Grafana] Expuse pe http://localhost:8081/metrics`);
 });
