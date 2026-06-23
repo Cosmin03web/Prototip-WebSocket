@@ -6,14 +6,12 @@ const client = require('prom-client');
 
 const FINNHUB_KEY = process.env.FINNHUB_KEY;
 
-// =========================================================
 // 1. CONFIGURARE PROMETHEUS (Pentru testele Grafana) pe portul 8081
-// =========================================================
+
 const app = express();
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics({ register: client.register });
 
-// Metrica specială pentru a vedea numărul de utilizatori conectați
 const activeConnections = new client.Gauge({
     name: 'websocket_conexiuni_active',
     help: 'Numarul curent de conexiuni WebSocket deschise'
@@ -28,14 +26,12 @@ app.listen(8081, () => {
     console.log(`[Metrici Grafana] Expuse pe http://localhost:8081/metrics`);
 });
 
-// =========================================================
 // 2. SERVERUL WEBSOCKET (Push Gateway) pe portul 8080
-// =========================================================
+
 const wss = new WebSocket.Server({ port: 8080 }, () => {
     console.log(`[WebSocket Gateway] Serverul ascultă pe ws://localhost:8080`);
 });
 
-// Funcția care adună datele (identică cu cea din REST)
 async function fetchAllData() {
     try {
         const binanceSymbols = encodeURI('["BTCUSDT","ETHUSDT","SOLUSDT"]');
@@ -74,10 +70,9 @@ async function fetchAllData() {
     }
 }
 
-// =========================================================
+
 // 3. LOGICA DE BROADCAST (Inima sistemului WebSocket)
-// =========================================================
-// Serverul adună date la fiecare 5 secunde și le trimite TUTUROR clienților conectați
+
 setInterval(async () => {
     if (wss.clients.size > 0) {
         const latestData = await fetchAllData();
@@ -91,17 +86,15 @@ setInterval(async () => {
     }
 }, 10000);
 
-// Gestionarea conexiunilor
 wss.on('connection', async (ws) => {
-    activeConnections.inc(); // Creștem metrica din Grafana
+    activeConnections.inc(); 
     console.log(`[Client conectat] Total activi: ${wss.clients.size}`);
 
-    // Când un client se conectează, îi dăm imediat un prim set de date, să nu aștepte 5 secunde
     const initialData = await fetchAllData();
     ws.send(JSON.stringify(initialData));
 
     ws.on('close', () => {
-        activeConnections.dec(); // Scădem metrica din Grafana
+        activeConnections.dec(); 
         console.log(`[Client deconectat] Total activi: ${wss.clients.size}`);
     });
 });
