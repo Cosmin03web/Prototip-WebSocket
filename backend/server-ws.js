@@ -23,9 +23,9 @@ app.get('/metrics', async (req, res) => {
 });
 
 const path = require('path');
-app.use(express.static(path.join(__dirname, 'frontend-dashboard/build')));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend-dashboard/build', 'index.html'));
+app.use(express.static(path.join(__dirname, '../frontend-dashboard/build')));
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend-dashboard/build', 'index.html'));
 });
 
 app.listen(8081, () => {
