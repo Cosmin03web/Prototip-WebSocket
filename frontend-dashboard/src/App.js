@@ -11,11 +11,9 @@ function App() {
   const [fromCurrency, setFromCurrency] = useState('USD');
   const [toCurrency, setToCurrency] = useState('EUR');
 
-  // =========================================================
   // LOGICA WEBSOCKET (Arhitectura Event-Driven / Push)
-  // =========================================================
+
   useEffect(() => {
-    // Deschidem o singură conexiune persistentă
     const ws = new WebSocket('ws://localhost:8080');
 
     ws.onopen = () => {
@@ -23,7 +21,6 @@ function App() {
       setError(null);
     };
 
-    // React doar "ascultă". Când serverul împinge date, React redesenează ecranul.
     ws.onmessage = (event) => {
       const result = JSON.parse(event.data);
       if (result.error) {
@@ -43,13 +40,11 @@ function App() {
       setError('Eroare conexiune WebSocket');
     };
 
-    // Curățăm conexiunea dacă utilizatorul închide pagina
     return () => {
       ws.close();
     };
-  }, []); // Array gol = se rulează o singură dată la deschiderea paginii
-
-  // --- Logica Matematică a Calculatorului ---
+  }, []); 
+  
   const calculateConversion = () => {
     if (!data || !data.fiat) return '0.00';
     const rates = { USD: 1, ...data.fiat.rates };
