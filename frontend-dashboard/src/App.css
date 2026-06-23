@@ -1,0 +1,163 @@
+body {
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  text-align: center;
+  color: #1a1a1a;
+  margin-bottom: 30px;
+}
+
+.architecture-label {
+  background-color: #3498db;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.3rem;
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+/* Stiluri specifice pentru numere */
+.price-main {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin: 10px 0;
+}
+
+.positive { color: #2ecc71; font-weight: bold; }
+.negative { color: #e74c3c; font-weight: bold; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* Stiluri liste (Valute și Sentiment) */
+.data-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.data-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 1.1rem;
+}
+
+.data-list li:last-child {
+  border-bottom: none;
+}
+
+.currency-flag { font-weight: bold; color: #34495e; }
+.currency-val { color: #2980b9; font-weight: bold; }
+
+.rank-badge {
+  background: #f39c12;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  margin-right: 10px;
+}
+
+.timestamp {
+  text-align: center;
+  color: #7f8c8d;
+  margin-top: 30px;
+  font-size: 0.95rem;
+}
+
+.loading { text-align: center; font-size: 1.2rem; color: #3498db; }
+/* Stiluri pentru Widget-ul Calculator Valutar */
+.calc-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.calc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.calc-group label {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  font-weight: bold;
+}
+
+.calc-input, .calc-select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #2c3e50;
+  outline: none;
+}
+
+.calc-input:focus, .calc-select:focus {
+  border-color: #3498db;
+}
+
+.calc-result-box {
+  background: #ecf0f1;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.calc-result-title {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  text-transform: uppercase;
+}
+
+.calc-result-value {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #27ae60;
+  margin-top: 5px;
+}
