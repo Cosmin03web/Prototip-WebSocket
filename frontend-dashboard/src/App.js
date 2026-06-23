@@ -14,7 +14,8 @@ function App() {
   // LOGICA WEBSOCKET (Arhitectura Event-Driven / Push)
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080');
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${protocol}//${window.location.host}`);
 
     ws.onopen = () => {
       setWsStatus('Conectat (Live)');
