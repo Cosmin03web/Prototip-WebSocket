@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http')
 const WebSocket = require('ws');
 const axios = require('axios');
 const client = require('prom-client');
@@ -9,8 +10,11 @@ const FINNHUB_KEY = process.env.FINNHUB_KEY;
 // 1. CONFIGURARE PROMETHEUS (Pentru testele Grafana) pe portul 8081
 
 const app = express();
+const server = http.createServer(app);
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics({ register: client.register });
+
+const wss = new WebSocket.Server({ server });
 
 const activeConnections = new client.Gauge({
     name: 'websocket_conexiuni_active',
@@ -28,8 +32,9 @@ app.use((req, res) => {
     res.sendFile(path.join(__dirname, '../frontend-dashboard/build', 'index.html'));
 });
 
-app.listen(8081, () => {
-    console.log(`[Metrici Grafana] Expuse pe http://localhost:8081/metrics`);
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+    console.log(`Server hibrid (HTTP + WebSocket) pornit pe portul ${PORT}`);
 });
 
 // 2. SERVERUL WEBSOCKET (Push Gateway) pe portul 8080
