@@ -59,8 +59,7 @@ function App() {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1>Global Markets Aggregator</h1>
-        {/* Notă: Aici îți vei pune manual eticheta potrivită (REST sau WebSocket) în funcție de ce prototip rulezi */}
+        <h1>Global Markets Aggregator WebSocket</h1>
         <span className="architecture-label" style={{ backgroundColor: '#8e44ad' }}>
           Platformă activă (Vezi codul curent)
         </span>
